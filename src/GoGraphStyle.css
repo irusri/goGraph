@@ -1,0 +1,43 @@
+/* CSS file */
+@namespace s "library://ns.adobe.com/flex/spark";
+@namespace mx "library://ns.adobe.com/flex/mx";
+mx|ToolTip {
+	backgroundAlpha: 0.85;
+	backgroundColor: #111111;
+	color: #ffffff;
+	fontFamily: Tahoma;
+	font-size:12;
+	
+}
+.closeButton {
+	icon: Embed(source="/assets/close.png");
+	skin: ClassReference(null); 
+}
+
+@font-face { 
+	src: url("GillSans_Regular.ttf"); 
+	fontFamily: gillsans; 
+	embedAsCFF: false; 
+	color:#000000;
+}
+.textareafont{
+	fontFamily: btFontFamily;
+	font-size:12;
+	font-thickness:200;
+	font-sharpness:-50;
+	font-grid-fit-type:subpixel;
+}
+
+.adgd{
+	
+	backgroundAlpha: 0;
+	
+	color:#FFFFFF;
+	
+}
+
+.linkbtn{
+	backgroundAlpha: 0;
+	
+	color:#FFFFFF;
+}

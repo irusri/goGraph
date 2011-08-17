@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" preloader="preload.CustomPreloader"
+			   xmlns:mx="library://ns.adobe.com/flex/mx" initialize="init();" minWidth="955" minHeight="600" xmlns:springgraph="com.adobe.flex.extras.controls.springgraph.*">
+	
+	<fx:Declarations>
+		<mx:HTTPService id="serve_goConfigData" 
+						resultFormat="text"
+						url="goGraph.json"
+						result="handle_config_files(event)" />
+		<mx:HTTPService id="serve_getGOData"  
+						useProxy="false"          
+						method="GET"
+						showBusyCursor="true" 
+						result="GODataResult(event)"
+						fault="GOFault(event)"
+						resultFormat="text" />
+		
+		<mx:HTTPService id="serve_getTranscriptData"  
+						useProxy="false"          
+						method="GET"
+						showBusyCursor="true" 
+						result="TranscriptDataResult(event)"
+						fault="GOFault(event)"
+						resultFormat="text" />
+		
+		
+		<mx:HTTPService id="serve_submitTranscript"  
+						useProxy="false"          
+						method="GET"
+						showBusyCursor="true" 
+						result="SubmitTranscriptResult(event)"
+						fault="GOFault(event)"
+						resultFormat="text" />
+		
+		<mx:Fade id="fadeOut" duration="600" alphaFrom="1.0" alphaTo="0.0"/>
+		<mx:Fade id="fadeIn" duration="600" alphaFrom="0.0" alphaTo="1.0"/>
+		
+		<mx:WipeRight id="hideme" duration="500"/>
+		<mx:WipeLeft id="showme" duration="500"/>
+	</fx:Declarations>
+	<fx:Style source="GoGraphStyle.css"/>
+	<fx:Script source="GoGraphMain.as"></fx:Script>
+	<!--<mx:Text fontSize="9"
+	htmlText="&lt;a href=&quot;http://mark-shepherd.com&quot;&gt;mark-shepherd.com&lt;/a&gt;" y="31" fontWeight="bold" textAlign="right" right="11" width="114"/>-->
+	<!--<mx:Button click="newItem()" x="29" y="18" label="New item"/>-->
+	
+	<!--<mx:Button x="30" y="51" label="Link item" click="linkItems(linkFrom.text, linkTo.text)"/>
+	<mx:TextInput x="136" y="51" width="42" text="1" id="linkFrom"/>
+	<mx:TextInput x="242" y="51" width="42" text="3" id="linkTo"/>
+	<mx:Label x="181" y="53" text="to item"/>
+	<mx:Button x="30" y="86" label="Unlink item" click="unlinkItems(unlinkFrom.text, unlinkTo.text)"/>
+	<mx:TextInput x="136" y="86" width="42" text="1" id="unlinkFrom"/>
+	<mx:TextInput x="242" y="86" width="42" text="3" id="unlinkTo"/>
+	<mx:Label x="180" y="88" text="from item"/>
+	<mx:Label y="6" text="SpringGraph Component Tester" right="10" fontSize="18"/>-->
+	
+	<!--	<mx:Image click="handleExportClick()"  id="csvbtn"  width="42" height="20" buttonMode="true" source="@Embed(source='assets/icon-csv.png')" y="0" right="14"/>
+	-->	<mx:Image top="0" right="0" width="22" height="22" buttonMode="true" source="@Embed(source='assets/arrow-show.png')"  id="showbtn" visible="{!controlBox.visible}" click="{controlBox.visible=true;s.percentWidth=88}" />
+	
+	<!--<springgraph:Graph-->
+	<springgraph:SpringGraph id="s" backgroundColor="#ffffff" backgroundAlpha="0"  doubleClickEnabled="true"
+							 lineColor="#6666ff" repulsionFactor="{repulsionSlider.value}" itemRenderer="GoRenderer" left="0" right="0" top="20" bottom="0">
+		<!--<springgraph:itemRenderer>
+		<fx:Component>
+		<mx:VBox backgroundAlpha="0.3" backgroundColor="0x444444"
+		paddingBottom="5" paddingLeft="5" paddingRight="5" paddingTop="5">
+		
+		<fx:Script>
+		<![CDATA[
+		import mx.controls.Alert;
+		protected function label1_clickHandler(event:MouseEvent):void
+		{
+		Alert.show(data.id.toString());
+		
+		
+		}
+		]]>
+		</fx:Script>
+		
+		<mx:Label text="{data.id}"   fontSize="{outerDocument.fontSizeSlider.value}" color="0xffffff"
+		textAlign="center"/>					
+		</mx:VBox>
+		</fx:Component>
+		</springgraph:itemRenderer>-->
+		
+	</springgraph:SpringGraph>
+	
+	
+	<!--<mx:AdvancedDataGrid id="tmpgrid" dataProvider="{tmparr}">
+	<mx:groupedColumns>
+	
+	<mx:AdvancedDataGridColumn   dataField="citemp" headerText="citemp"/>
+	<mx:AdvancedDataGridColumn   dataField="citem" headerText="citem"/>
+	<mx:AdvancedDataGridColumn   dataField="infos" headerText="infos"/>
+	</mx:groupedColumns>
+	
+	</mx:AdvancedDataGrid>-->
+	<!--<s:Button right="200" id="refreshbtn" click="refreshbtn_clickHandler(event)" label="Refresh"/>-->
+	<mx:VBox paddingLeft="15"  height="100%"  backgroundColor="#FFFF99" showEffect="showme" hideEffect="hideme" id="controlBox" width="12%" right="0" top="0"  >
+		<mx:Canvas width="100%">
+			<mx:Image click="{helpGo();}"  right="40" top="3" width="24" height="24" buttonMode="true" source="@Embed(source='assets/help.png')"   />
+			
+			<mx:Button id="closeButton" right="6" top="5" buttonMode="true" click="{controlBox.visible=false;s.percentWidth=100}"  styleName="closeButton" useHandCursor="true"  />
+			
+			<s:Label id="titletxt" fontWeight="bold" paddingTop="10" text="GO IDs"/>	
+		</mx:Canvas>
+		<mx:Canvas>
+			
+		<mx:TextArea showEffect="showme" hideEffect="hideme" height="200" visible="{goChk.selected}" text="GO:0005975  GO:0009311"  width="128"  id="input_GO"/>
+		<mx:TextArea showEffect="hideme" hideEffect="showme" height="200" visible="{tidChk.selected}" text="POPTR_0012s02720.1	 POPTR_0016s06600.1	 POPTR_0006s01160.1"  width="148"  id="input_TID"/>
+		</mx:Canvas>
+	<s:RadioButton fontWeight="bold" groupName="idtype"  selected="true" id="goChk" change="{goChk.selected==true?titletxt.text='GO IDs':titletxt.text='Transcript IDs'}" label="GO IDs" />
+	<s:RadioButton fontWeight="bold" groupName="idtype"  id="tidChk" change="{tidChk.selected==true?titletxt.text='Transcript IDs':titletxt.text='GO IDs'}" label="Transcript IDs"/>
+		<s:VGroup >
+			<mx:HBox >
+				<s:Label fontWeight="bold" paddingTop="10" text="Repulsion:"/>
+				<mx:HSlider id="repulsionSlider"  value="0.5" minimum="0.02" maximum="1.5" change="s.refresh()" liveDragging="true" width="137"/>
+			</mx:HBox>
+			<mx:HBox>
+				<mx:Label fontWeight="bold"  paddingTop="5"  text="Font Size:"/>
+				<mx:HSlider  id="fontSizeSlider" minimum="4" maximum="14" value="{fontSizeSpringSlider}" change="s.refresh()" liveDragging="true" width="137"/>
+			</mx:HBox>
+			<mx:HBox>
+				<mx:Label fontWeight="bold"  paddingTop="5"  text="Node Size:"/>
+				<mx:HSlider  id="circlesize" minimum="50" maximum="120"  value="60" liveDragging="true" width="137"/>
+			</mx:HBox>
+			
+		</s:VGroup>
+		
+		
+		<mx:CheckBox fontWeight="bold" paddingTop="5"  label="Show Transcript IDs" selected="true" id="showtidChk"/>
+		<mx:CheckBox fontWeight="bold" paddingTop="5"  label="Show Tree View" selected="true" id="showtidTree"/>
+		
+		
+		<mx:Spacer height="10"/>
+		<mx:HBox>
+			<mx:ColorPicker  labelField="Font Color" selectedColor="0x666666" id="fontColorPicker" />	
+			<mx:Label fontWeight="bold"  paddingTop="5"  text="Font Color      "/>
+		</mx:HBox>
+		<mx:HBox>
+			<mx:ColorPicker  labelField="Children Color" selectedColor="0xFFA500" id="childPicker" />
+			<mx:Label fontWeight="bold"  paddingTop="5"  text="Child Color        "/>
+		</mx:HBox>
+		<mx:HBox>
+			<mx:ColorPicker  labelField="Accession Color" selectedColor="0x8F8FFF" id="accessionPicker" />	
+			<mx:Label fontWeight="bold"  paddingTop="5"  text="Accession Color"/>
+		</mx:HBox>
+		<mx:HBox>
+			<mx:ColorPicker  labelField="Ancestors Color" selectedColor="0x666666" id="parentPicker" />	
+			<mx:Label fontWeight="bold"  paddingTop="5"  text="Parent Color      "/>
+		</mx:HBox>
+		
+		
+		<mx:LinkButton paddingTop="10"  fontWeight="bold" color="blue" textDecoration="underline" click="{takeSnapshot();}" visible="{s.numChildren!=0}"  label="Export to PNG"/>
+		<mx:Spacer height="20"/>
+		<mx:Button  label="Submit" right="1" width="146" top="163" color="#000000"  click="dataSendSubmit();" id="plant_level"/>
+	</mx:VBox>
+	
+	<mx:VBox paddingLeft="8" visible="{showtidChk.selected}" cornerRadius="5" paddingRight="0" height="100%" backgroundAlpha="0.5" backgroundColor="#111111"  showEffect="fadeIn" hideEffect="fadeOut" id="TranscriptBox" width="172" left="0" top="0"  >
+		<mx:Canvas width="100%">
+			
+			<mx:Button  right="0" top="5" buttonMode="true" click="{TranscriptBox.visible=false}"  styleName="closeButton" useHandCursor="true"  />
+		</mx:Canvas>
+		<s:Label color="#FFFFFF" fontWeight="bold"  paddingTop="2" text="{'Accession : '+tmpidstr +'\n\nTranscript IDs:'}"/>
+		<mx:Canvas width="100%" height="100%">
+			
+		
+		<mx:AdvancedDataGrid height="100%" styleName="adgd" headerHeight="0" paddingLeft="0" borderVisible="false" contentBackgroundAlpha="0"  width="100%" dataProvider="{tempdatagridarr}" id="tempadg"  >
+			<mx:groupedColumns>
+				<mx:AdvancedDataGridColumn itemRenderer="transcript"   dataField="tid" headerText="ID"/>
+				
+			</mx:groupedColumns>	
+		</mx:AdvancedDataGrid>
+		<mx:Image click="handleExportClick2()"  id="csvbtn2"  width="42" height="20" buttonMode="true" source="@Embed(source='assets/icon-csv.png')" bottom="0" right="0"/>
+		</mx:Canvas>
+	</mx:VBox>
+	
+	
+	<mx:Canvas   left="{TranscriptBox.visible==true?174:0}" visible="{showtidTree.selected}" cornerRadius="5" height="600"  backgroundAlpha="0.5" backgroundColor="#111111"  showEffect="fadeIn" hideEffect="fadeOut" id="goBox" width="450"  top="1"  >
+
+	<mx:AdvancedDataGrid verticalGridLines="false"  styleName="adgd" headerHeight="0" displayItemsExpanded="true"  height="100%"   borderVisible="false" contentBackgroundAlpha="0"  width="100%"  id="godg"  >
+		
+		<mx:dataProvider>
+			<mx:GroupingCollection2 id="gc" source="{goArraycol}">
+				<mx:Grouping>
+					<mx:GroupingField  name="relate" />
+					<mx:GroupingField name="contology" />
+				</mx:Grouping>
+			</mx:GroupingCollection2>
+		</mx:dataProvider> 
+		
+		
+		<mx:columns>
+			<!--<mx:AdvancedDataGridColumn width="300"   id="contology" dataField="contology" headerText="contology"/>-->
+			<mx:AdvancedDataGridColumn width="150"   dataField="cid" headerText="ID"/>
+			
+			<mx:AdvancedDataGridColumn  wordWrap="true"  dataField="desc" headerText="desc"/>
+			<mx:AdvancedDataGridColumn  visible="false"  dataField="cparent"  headerText="cparent"/>
+			<mx:AdvancedDataGridColumn visible="false"   dataField="relate" headerText="relate"/>
+		</mx:columns>
+	</mx:AdvancedDataGrid>
+		<mx:Button id="goclosebtn" right="8" top="2" buttonMode="true" click="{goBox.visible=false;showtidTree.selected=false}"  styleName="closeButton" useHandCursor="true"  />
+		<mx:Image click="handleExportClick()"  id="csvbtn"  width="42" height="20" buttonMode="true" source="@Embed(source='assets/icon-csv.png')" bottom="0" right="0"/>
+		</mx:Canvas>
+	
+	<!--<mx:Image source="0044261" autoLoad="true"/>-->
+	<mx:Box backgroundColor="#111111" doubleClickEnabled="true"  backgroundAlpha="0.6" y="5" width="200" right="{this.width/2-100}" visible="false" id="alertBox"/>
+	
+	
+	<mx:AdvancedDataGrid visible="false"  dataProvider="{goArraycol}"  id="gotmpdg"  >
+	
+		<mx:columns>
+		
+			<mx:AdvancedDataGridColumn width="150"   dataField="cid" headerText="ID"/>
+			
+			<mx:AdvancedDataGridColumn  wordWrap="true"   dataField="desc" headerText="desc"/>
+			<mx:AdvancedDataGridColumn  visible="false"  dataField="cparent"  headerText="cparent"/>
+			<mx:AdvancedDataGridColumn visible="false"   dataField="relate" headerText="relate"/>
+		</mx:columns>
+	</mx:AdvancedDataGrid>
+	
+	
+</s:Application>

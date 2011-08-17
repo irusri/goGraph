@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark"  doubleClickEnabled="true" doubleClick="{(this.parentDocument as goGraph).gotoNewNode(data.id)}"
+				xmlns:mx="library://ns.adobe.com/flex/mx" click="{(this.parentDocument as goGraph).transcriptdataSend(data.id)}"
+				autoDrawBackground="false" xmlns:local="*" toolTip="{data.info+'\n'+data.ontology+'\n'+data.rel+'\nTranscript Ids: '+data.counts}" creationComplete="applyData()">
+	<fx:Script>
+		<![CDATA[
+			import events.GoEvent;
+			
+			import mx.controls.Alert;
+			import mx.core.IToolTip;
+			import mx.events.ColorPickerEvent;
+			import mx.events.FlexEvent;
+			import mx.events.ListEvent;
+			import mx.events.SliderEvent;
+			import mx.managers.ToolTipManager;
+			
+		//	private var myAlert:AlertTimer=new AlertTimer();
+			private var myTimer:Timer;
+			private var tt:IToolTip;
+			
+			[Bindable]
+			private var showBoolean:Boolean=false;
+			
+			private function applyData(): void {
+				
+				(this.parentDocument as goGraph).childPicker.addEventListener(ColorPickerEvent.CHANGE,pogpass);
+				(this.parentDocument as goGraph).accessionPicker.addEventListener(ColorPickerEvent.CHANGE,pogpass);
+				(this.parentDocument as goGraph).parentPicker.addEventListener(ColorPickerEvent.CHANGE,pogpass);
+				(this.parentDocument as goGraph).circlesize.addEventListener(SliderEvent.CHANGE,sizeChange);
+				(this.parentDocument as goGraph).godg.addEventListener(ListEvent.ITEM_CLICK,godgItemClick);
+				//(this.parentDocument as goGraph).godg.addEventListener(MouseEvent.,booleanFalse)	// determine the color
+				var color: int;
+		
+				if(data.name=='child'){
+					color = (this.parentDocument as goGraph).childPicker.selectedColor;
+				}else if(data.name=='midparent'){
+					color = (this.parentDocument as goGraph).accessionPicker.selectedColor;//0x8F8FFF;
+				}else{
+					color =(this.parentDocument as goGraph).parentPicker.selectedColor;// 0x666666;
+				}
+				
+			//	+'->'+Math.log(data.counts+.000001)
+				// this atom type is not in the 'atomColors' table. use a default.
+				//color = 0x666666;
+				
+				// determine the size. To a first approximation, all atoms are roughly the
+				// same size. See http://www.historyoftheuniverse.com/atomsize.html. 
+				var labelY: int = 25; // TODO: figure out how to do vertical centering automatically
+				var size: int = 60;
+				
+				// apply the settings to our UI components
+				circle.color = color;
+				circle.width = (this.parentDocument as goGraph).circlesize.value+Math.log(data.counts+.000001);
+				circle.height = (this.parentDocument as goGraph).circlesize.value+Math.log(data.counts+.000001);
+				
+				
+				circle2.width = (this.parentDocument as goGraph).circlesize.value+Math.log(data.counts+.000001);
+				circle2.height = (this.parentDocument as goGraph).circlesize.value+Math.log(data.counts+.000001);
+				
+				//	lab.width = size;
+				lab.y = ((this.parentDocument as goGraph).circlesize.value+Math.log(data.counts+.000001))/2-10;
+				
+			}
+			
+			private function pogpass(evt:ColorPickerEvent):void{
+				var color: int;
+				if(data.name=='child'){
+					color = (this.parentDocument as goGraph).childPicker.selectedColor;
+				}else if(data.name=='midparent'){
+					color = (this.parentDocument as goGraph).accessionPicker.selectedColor;//0x8F8FFF;
+				}else{
+					color =(this.parentDocument as goGraph).parentPicker.selectedColor;// 0x666666;
+				}
+				circle.color = color;
+			}
+			
+			public function doubleClick(event: Event): void {
+				//app().itemDoubleClick(event);
+			}
+			
+			//private function app(): RoamerDemo {
+			//return Application.application as springGraph;
+			//	}
+			
+			public override function set data(value:Object):void{
+				
+				super.data = value;
+			
+			}
+			private function 	sizeChange(evt:SliderEvent):void{
+				
+				circle.width = (this.parentDocument as goGraph).circlesize.value+Math.log(data.counts+.000001);
+				circle.height = (this.parentDocument as goGraph).circlesize.value+Math.log(data.counts+.000001);
+				
+				
+				circle2.width = (this.parentDocument as goGraph).circlesize.value+Math.log(data.counts+.000001);
+				circle2.height = (this.parentDocument as goGraph).circlesize.value+Math.log(data.counts+.000001);
+				
+				//	lab.width = size;
+				lab.y = ((this.parentDocument as goGraph).circlesize.value+Math.log(data.counts+.000001))/2-10;
+			}
+			private function 	godgItemClick(evt:ListEvent):void{
+				var color: int;
+				showBoolean=false;
+				/* if (tt) {
+					ToolTipManager.destroyToolTip(tt);
+					tt = null;
+				} */
+				//circle.showBoolean=false;
+				//	if(myAlert.myWin!=null){
+				//myAlert.myWin.visible=false;}
+				//	Alert.show(data.id + evt.itemRenderer.data.cparent)
+				if(data.id+';'==evt.itemRenderer.data.cid ){
+					
+					myTimer = new Timer(5000,1);
+					
+					myTimer.start();
+					myTimer.addEventListener(TimerEvent.TIMER_COMPLETE, timerCompleteHandler);
+					//myAlert.show(circle,data.name+"-"+evt.itemRenderer.data.cid+ "", false);
+					showBoolean=true;
+					
+					(this.parentDocument as goGraph).transcriptdataSend(data.id);
+					
+					//tt = ToolTipManager.createToolTip(data.info+'\n'+data.ontology+'\n'+data.rel, this.x+circle.width/2, this.y-circle.height/2,null,circle);
+				
+					//=true;
+					//color=0x8F8FFF;
+					//myAlert.show(circle,"    "+ "", false);
+				}
+				
+				//circle.color = color;
+				
+				
+				
+				
+				//	
+				
+			}
+			
+			private function timerCompleteHandler(event:Event):void
+			{
+				/* if (tt) {
+					ToolTipManager.destroyToolTip(tt);
+					tt = null;
+				} */
+				showBoolean=false;
+				myTimer.stop();
+				
+
+			}
+			
+			
+			
+		]]>
+	</fx:Script>
+	
+	<local:GoNodeCircle  id="circle"/>
+	<local:GoCircle2 visible="{showBoolean}" id="circle2"/>
+	<mx:Label id="lab"  fontSize="{(this.parentDocument as goGraph).fontSizeSlider.value}" fontWeight="bold" textAlign="center" fontFamily="verdana" color="{(this.parentDocument as goGraph).fontColorPicker.selectedColor}"   text="{data.id}" />
+	<!--<s:Label color="red" visible="{data.name=='midparent'?true:false}" toolTip="{data.name}" text="{data.id}"/>
+	<s:Label color="black" visible="{data.name=='parent'?true:false}" toolTip="{data.name}" text="{data.id}"/>-->
+	
+	
+	
+	
+</s:ItemRenderer>
